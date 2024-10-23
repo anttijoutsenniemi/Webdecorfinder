@@ -2,20 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import InputField from './components/InputField';
 import './App.css';
 import ImageCapture from './components/ImageCapture';
-import { fetchInterPretationForWebSearch, fetchInterPretationWithOnlyText, fetchInterPretationWithReference, fetchInterPretationWithSpaceImg } from './components/Aihandler';
-import { fetchFurnitureData, fetchFurnitureDataWithQuantity, sendFeedbackToServer, sendSerperQuery } from './components/ApiFetches';
-import clientPublic from './assets/clientPublic.json';
+import { fetchInterPretationForWebSearch } from './components/Aihandler';
+import { sendSerperQuery } from './components/ApiFetches';
 import furnitureCategories from './assets/furnitureCategories.json';
 import ProductCard from './components/Products';
 import Modal from './components/Modal';
-import NumberPicker from './components/NumberPicker';
-import { randomizeJsonValues } from './functions/randomizeJson';
 import { AppStates } from './App';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import { quantum } from 'ldrs';
 import type {} from 'ldrs';
-import Feedback from './components/Feedback';
 import CustomButton from './components/BackButton';
 quantum.register();
 
@@ -136,21 +132,6 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
     }, 50);
   }
 
-  // Function to flatten the object so that the values are like coordinates of a line in 2d matrix
-  const flattenObject = (obj: StyleObject): number[] => {
-    const colorThemes = obj.colorThemes ? Object.values(obj.colorThemes) : [];
-    const designStyles = obj.designStyles ? Object.values(obj.designStyles) : [];
-    return [...colorThemes, ...designStyles];
-  };
-
-  // Calculate Euclidean distance
-  const calculateDistance = (obj1: StyleObject, obj2: StyleObject): number => {
-    const values1 = flattenObject(obj1);
-    const values2 = flattenObject(obj2);
-    //console.log(values1, values2);
-    return Math.sqrt(values1.reduce((sum, value, index) => sum + Math.pow(value - values2[index], 2), 0));
-  };
-
   const initiateWebSearch = async () => {
     try {
       setWebSearchMode(false);
@@ -199,163 +180,10 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
         initiateWebSearch();
         return;
       }
-
-      let aiJson : any;
-      let arrayOfObjects : any;
-      if(appStates.aiJson && furnitureClass){ //this should trigger if user wants to find more products after already getting the first set of recommendations
-        aiJson = appStates.aiJson;
-        //we check if we search from new products or no, searching from new should always be after user finds no matches from used ones first
-        if(fetchFromNew){
-          arrayOfObjects = await fetchFurnitureData(`new_${furnitureClass}`);
-        }
-        else {
-          if(appStates.quantityNumber > 1){ //if user wants furniture with min x quantity
-            arrayOfObjects = await fetchFurnitureDataWithQuantity(furnitureClass, appStates.quantityNumber);
-          }
-          else{
-            arrayOfObjects = await fetchFurnitureData(furnitureClass);
-          }
-          
-        }
-          //if db module returns empty array (no products in the category)
-          if(arrayOfObjects.length === 0 || !arrayOfObjects[0]){
-            handleOptionClick('Ei tuotteita');
-            return;
-          }
-      }
-      else{ //this should trigger if its the first time user wants product recommendations
-        if(appStates.quantityNumber > 1){ //if user wants atleast x amount of products
-          arrayOfObjects = await fetchFurnitureDataWithQuantity(appStates.furnitureClass, appStates.quantityNumber);
-        }
-        else{
-          arrayOfObjects = await fetchFurnitureData(appStates.furnitureClass);
-        }
-          //if db module returns empty array (no products in the category)
-          if(arrayOfObjects.length === 0 || !arrayOfObjects[0]){
-            handleOptionClick('Ei tuotteita');
-            return;
-          }
-        let refImageArray : string[] = [];
-        if (appStates.refImage64) {
-          refImageArray.push(appStates.refImage64);
-        }
-        if (appStates.refImage642) {
-          refImageArray.push(appStates.refImage642);
-        }
-        if (appStates.refImage643) {
-          refImageArray.push(appStates.refImage643);
-        }
-  
-        let aiJsonUnParsed;
-        if(appStates.spaceImgMode){ //we use ai prompt with images of the space
-          aiJsonUnParsed = await fetchInterPretationWithSpaceImg(refImageArray);
-        }
-        else{ //we use ai prompt with user typed data + ref images
-          let userFilledData : string = "";
-  
-          for(let i = 0; i < appStates.chatHistory.length; i++){
-            userFilledData += appStates.chatHistory[i] + " ";
-          }
-          
-          aiJsonUnParsed = await fetchInterPretationWithReference(userFilledData, refImageArray);
-        }
-  
-        aiJson = JSON.parse(aiJsonUnParsed);
-        setAiJson(aiJson);
-      }
-      
-      let botAnswr : string = aiJson.explanation;  
-  
-      // Compute distances
-        const distances = arrayOfObjects.map((obj : any, index : number) => {
-          const distance = calculateDistance(aiJson, obj.styleJson);
-          return {
-            distance,
-            object: obj
-          };
-        });
-        //console.log(distances);
-    
-        // Sort by distance
-        const sortedObjects = distances.sort((a : any, b : any) => a.distance - b.distance);
-    
-        // Select top 12 matches
-        const top3Matches = sortedObjects.slice(0, 12).map((item : any) => item.object);
-        setRecommendations(top3Matches);
-        // handleOptionClick('recommendations', 'Show me the recommendations please', top3Matches, botAnswr);
-        handleOptionClick('suositukset', 'Voisitko näyttää minulle kalustesuositukset?', top3Matches, botAnswr);
   
     } catch (error) {
       console.log(error);
       setErrorMessage('An unexpected error occured fetching AI response');
-    }
-  }
-
-  function getRandomElements(arr : any, count : number) {
-    const shuffled = arr.sort(() => 0.5 - Math.random()); // Shuffle the array
-    return shuffled.slice(0, count); // Get the first `count` elements
-  }
-
-  //this is redacted but saved it in case its needed
-  const getRandomRecommendations = async () => {
-    let arrayOfObjects = await fetchFurnitureData(appStates.furnitureClass);
-    let newArr = getRandomElements(arrayOfObjects, 3);
-    
-    //handleOptionClick('recommendations', 'Show me the recommendations please', newArr, 'Here are some random recommendations as promised:')
-    handleOptionClick('suositukset', 'Voisitko näyttää minulle kalustesuosituket?', newArr, 'Tässä on satunnaisia suosituksia kujten lupasin:')
-  }
-
-  const getTextRecommendations = async () => {
-    try {
-      setLoading(true);
-      let arrayOfObjects : any;
-      if(appStates.quantityNumber > 1){
-        arrayOfObjects = await fetchFurnitureDataWithQuantity(appStates.furnitureClass, appStates.quantityNumber);
-      }
-      else {
-        arrayOfObjects = await fetchFurnitureData(appStates.furnitureClass);
-      }
-      console.log(appStates.furnitureClass);
-      console.log(arrayOfObjects);
-        //if db module returns empty array (no products in the category)
-        if(arrayOfObjects.length === 0 || !arrayOfObjects[0]){
-          handleOptionClick('Ei tuotteita');
-          return;
-        }
-      let userFilledData : string = "";
-  
-      for(let i = 0; i < appStates.chatHistory.length; i++){
-        userFilledData += appStates.chatHistory[i] + " ";
-      }
-      
-      let aiJsonUnParsed = await fetchInterPretationWithOnlyText(userFilledData);
-
-      let aiJson = JSON.parse(aiJsonUnParsed);
-      setAiJson(aiJson);
-
-      let botAnswr : string = aiJson.explanation;  
-  
-      // Compute distances
-        const distances = arrayOfObjects.map((obj : any, index : number) => {
-          const distance = calculateDistance(aiJson, obj.styleJson);
-          return {
-            distance,
-            object: obj
-          };
-        });
-        //console.log(distances);
-    
-        // Sort by distance
-        const sortedObjects = distances.sort((a : any, b : any) => a.distance - b.distance);
-    
-        // Select top 12 matches
-        const top3Matches = sortedObjects.slice(0, 12).map((item : any) => item.object);
-        setRecommendations(top3Matches);
-        handleOptionClick('suositukset', 'Voisitko näyttää minulle kalustesuositukset?', top3Matches, botAnswr);
-        setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setErrorMessage(`Error occured: ${error}`)
     }
   }
 
@@ -369,6 +197,13 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
     let recommendationArray : CompareObject[] = [];
     let nextPageNumber : number;
     switch (option) {
+          case '1. Etsi kalusteita verkosta':
+            setWebSearchMode(true);
+            nextPageNumber = phaseNumber + 1;
+            setTimeout(() => { //this wont work without timeout for some reason
+              handleOptionClick('1. Etsi kalusteita käyttämällä kuvia tilasta', 'Etsi kalusteita verkosta');
+            }, 50);
+            break;
           case '1. Etsi kalusteita käyttämällä kuvia tilasta':
             botResponseText = 'Hienoa, aloitetaan! Mikä on lähin kaupunkisi? Tämä auttaa minua etsimään kalusteita läheltä sinua.';
             setTypingPhase(1);
@@ -381,59 +216,16 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
             options = newCategories;
             nextPageNumber = phaseNumber + 1;
             break;
-        case '2. Etsi kalusteita täyttämällä koko tyylikysely':
-            setWebSearchMode(false);
-            botResponseText = 'Hienoa, aloitetaan! Voitko kuvailla omin sanoin millaista tilaa suunnittelet? Voit täyttää tekstikentän ehdotuksilla, kirjoittaa itse tai molemmat!';
-            setTypingPhase(1);
-            setTypingMode(true);
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Tila kuvailtu':
-            botResponseText = 'Selvä! Voitko seuraavaksi kertoa, millaista tyyliä haet? (esim. värit ja teemat)';
-            setTypingPhase(2);
-            setTypingMode(true);
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Tyyli kuvailtu':
-            botResponseText = 'Hienoa, kirjasin tiedot ylös. Minkä tyyppisiä kalusteita etsit? Tässä muutamia vaihtoehtoja:';
-            let newCategoriesNoNumbers : string[] = furnitureCategories.withoutNumbers;
-            options = newCategoriesNoNumbers; 
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Kategoria kirjattu ylös':
-            botResponseText = 'Määrä kirjattu ylös. Haluatko antaa minulle kuvan/kuvia suunnittelemastasi tilasta, jotta voin löytää siihen sopivat kalusteet?';
-            options = ['Lisää kuvia', 'Ei kiitos, anna minulle suosituksia pelkän tekstin avulla'];
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Lisää kuvia':
-            botResponseText = "Lisää 1-3 referenssikuvaa";
-            setSpaceImageMode(false);
-            imageUploadMode = true;
-            nextPageNumber = phaseNumber + 1;
-            break;
         case 'Lisää kuva/kuvia tilasta':
             botResponseText = "Lisää 1-3 kuvaa tilasta";
             setSpaceImageMode(true);
             imageUploadMode = true;
             nextPageNumber = phaseNumber + 1;
             break;
-        case 'Etsitään satunnaisia suosituksia':
-            botResponseText = 'Hetkinen, etsin 3 satunnaista kalusteehdotusta...';
-            let randomAiJson = { "nonValidImage": false, "explanation": "Etsin lisää täysin satunnaisia suosituksia.", "colorThemes": { "dark": 0, "light": 0, "colorful": 0, "earthy": 0, "blackAndWhite": 0, "pastel": 0, "neutrals": 0, "jewelTones": 0, "metallics": 0, "oceanic": 0 }, "designStyles": { "industrial": 0, "scandinavian": 0, "minimalist": 0, "modern": 0, "farmhouse": 0, "artDeco": 0, "bohemian": 0, "traditional": 0, "rustic": 0, "glam": 0, "contemporary": 0, "transitional": 0 } };
-            randomAiJson = randomizeJsonValues(randomAiJson);
-            setAiJson(randomAiJson);
-            getRandomRecommendations();
-            nextPageNumber = phaseNumber + 1;
-            break;
         case 'Ei tuotteita':
             setLoading(false);
             botResponseText = "Näyttää siltä, ettei valitsemastasi kategoriasta löytynyt tällä hetkellä tarpeeksi käytettyjä tuotteita. Ne saattavat olla loppuunmyytyjä, ja saatat löytää niitä kokeilemalla myöhemmin uudestaan. Haluaisitko etsiä saman kategorian kalusteita uusista tuotteista?";
             options = ['Aloita alusta', 'Etsitään uusista tuotteista']
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Etsitään uusista tuotteista':
-            botResponseText = 'Selvä! Etsitään uusista tuotteista...'
-            uploadImage(appStates.furnitureClass, true);
             nextPageNumber = phaseNumber + 1;
             break;
         case 'suositukset':
@@ -446,50 +238,12 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
               botResponseText = 'En ymmärtänyt valintaasi.'
             }
             
-            options = ['Etsitään uusista tuotteista', 'Etsitään lisää kalusteita eri kategoriasta', 'Aloita alusta', 'Anna palautetta tekoälysovelluksesta', 'Ota yhteyttä myyjään'];
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Ota yhteyttä myyjään':
-            botResponseText = "Hetkinen...avaan piakkoin yhteydenottolomakkeen uuteen välilehteen.";
-            setTimeout(() => {
-              window.open(`${clientPublic.webStoreUrl}/info/57/yhteydenottolomake`, '_blank', 'noopener,noreferrer');
-            }, 3000);
-            options = ['Aloita alusta', 'Anna palautetta tekoälysovelluksesta'];
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Anna palautetta tekoälysovelluksesta':
-            botResponseText = 'Olivatko tekoälykalustesuositukset tarpeisiisi sopivia?';
-            setFeedbackMode(true);
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Palaute annettu':
-            botResponseText = 'Kiitos palautteesta! Toivottavasti kanssani asioiminen oli sujuvaa.'
-            nextPageNumber = phaseNumber + 1;
             options = ['Aloita alusta'];
-            break;
-        case '1. Etsi kalusteita verkosta':
-            setWebSearchMode(true);
-            nextPageNumber = phaseNumber + 1;
-            setTimeout(() => { //this wont work without timeout for some reason
-              handleOptionClick('1. Etsi kalusteita käyttämällä kuvia tilasta', 'Etsi kalusteita verkosta');
-            }, 50);
-            break;
-        case 'Ei kiitos, anna minulle suosituksia pelkän tekstin avulla':
-            botResponseText = 'Selvä, odota hetki, valitsen sinulle kolme kalusteehdotusta pelkän tekstin avulla...';
-            //getRandomRecommendations();
-            getTextRecommendations();
-            nextPageNumber = phaseNumber + 1;
-            break;
-        case 'Etsitään lisää kalusteita eri kategoriasta':
-            botResponseText = 'Selvä, mitä kategoriaa etsitään?';
-            setFetchProductsAgain(true);
-            let newCategoriesNoNumbers2 : string[] = furnitureCategories.withoutNumbers;
-            options = newCategoriesNoNumbers2; 
             nextPageNumber = phaseNumber + 1;
             break;
         case 'Aloita alusta':
-            botResponseText = 'Tervetuloa! Olen Redecofinder AI-avustajasi, ja autan sinua suunnittelemaan tilaasi sopivilla käytetyillä kalusteilla. Voit jatkaa valitsemalla 1: saat suosituksia nopeasti ja helposti käyttämällä kuvia suunnittelemastasi tilasta. 2: täytä koko tyylikysely, jossa löydämme sinulle sopivat kalusteet yhdessä.';
-            options = ['1. Etsi kalusteita käyttämällä kuvia tilasta', '2. Etsi kalusteita täyttämällä koko tyylikysely'];
+            botResponseText =  'Tervetuloa! Olen Webdecorfinder AI-avustajasi, ja autan sinua suunnittelemaan tilaasi sopivilla netistä löydetyillä kalusteilla.';
+            options = ['1. Etsi kalusteita verkosta'];
             nextPageNumber = phaseNumber + 1;
             break;
         default:
@@ -588,26 +342,6 @@ function toggleDrawer() {
   drawer.classList.toggle('open');
 }
 
-const receiveQuantityNumber = (quantityNumber : number) => {
-  setQuantityNumber(quantityNumber);
-  setShowNumberPicker(false);
-  let userResponse : string;
-  // if(quantityNumber === 0){
-  //   userResponse = 'Määrällä ei ole minulle merkitystä';
-  // }
-  userResponse = quantityNumber.toString();
-  if(quantityNumber === 51){
-    userResponse = "50+";
-  }
-  if(appStates.fetchProductsAgain){ //we go straight to fetching products if this the second+ time user is searching products
-    uploadImage(appStates.furnitureClass);
-  }
-  else{ //this should tirgger if its first time user searches for products
-    handleOptionClick('Kategoria kirjattu ylös', userResponse);
-  }
-  
-}
-
 const openProductInStore = (product: CompareObject) => {
   const url = product.productUrl;
 
@@ -619,26 +353,13 @@ const openProductInStore = (product: CompareObject) => {
   }
 };
 
-const receiveFeedBack = async (success: boolean, feedback?: string) => {
-  setLoading(true);
-  if(feedback){
-    await sendFeedbackToServer(success, feedback);
-  }
-  else{
-    await sendFeedbackToServer(success);
-  }
-  setLoading(false);
-  setFeedbackMode(false);
-  handleOptionClick('Palaute annettu');
-}
-
 //func for receiving input from user typing
 const receiveInput = (input : string) => {
   if(input.length < 1 || !input){
     setErrorMessage("Im sorry but I do not understand empty messages");
   }
   else{
-    //typingPhase tells us to which part of the ai dialog this input is used for 1=describe the space, 2=describe style, 3=needs
+    //typingPhase tells us to which part of the ai dialog this input is used for 1=describe city
     let historyArrayMessages : string[] = appStates.chatHistory;
     if(appStates.typingPhase === 1){
       historyArrayMessages[0] = '1. User describing city: ' + input;
@@ -648,37 +369,21 @@ const receiveInput = (input : string) => {
       setTypingMode(false);
       setErrorMessage('');
     }
-    else if(appStates.typingPhase === 2){
-      historyArrayMessages[1] = '2. User describing style he/she is looking for: ' + input;
-      setChatHistoryDirect(historyArrayMessages);
-      // handleOptionClick('Style explained', input);
-      handleOptionClick('Tyyli kuvailtu', input);
-      setTypingMode(false);
-      setErrorMessage('');
-    }
-    // this is since 22.8.24 redacted and should not trigger
-    else if(appStates.typingPhase === 3){
-      historyArrayMessages[2] = '3. User describing needs for the furniture: ' + input;
-      setChatHistoryDirect(historyArrayMessages);
-      setTypingPhase(0);
-      setTypingMode(false);
-      setErrorMessage('');
-    }
   }
 }
 
   return (
     <div className="chat-app-background">
     <div className='screen-wrapper'>
-    <div className='app-header'><h1 className='header-title'>ReDecoFinder avustaja</h1>
+    <div className='app-header'><h1 className='header-title'>WebDecorFinder avustaja</h1>
         <div className='hamburger-menu' onClick={()=>toggleDrawer()}>
           &#9776;
         </div>
         </div>
         <div className='drawer' id='drawer'>
         <button className='close-button' onClick={()=>toggleDrawer()}>Sulje &times;</button>
-          <a href={clientPublic.webStoreUrl}>
-            <div className='modal-option-button' style={{color: 'white', marginTop: 10}}>Avaa {clientPublic.webStoreName} verkkokauppa</div>
+          <a href="https://www.google.fi">
+            <div className='modal-option-button' style={{color: 'white', marginTop: 10}}>Avaa Google</div>
           </a>
         </div>
       <div className="chat-wrapper">
@@ -784,12 +489,6 @@ const receiveInput = (input : string) => {
       )}
       {appStates.typingMode && (
         <InputField receiveInput={receiveInput} typingPhase={appStates.typingPhase}/>
-      )}
-      {appStates.showNumberPicker && (
-        <NumberPicker receiveInput={receiveQuantityNumber}/>
-      )}
-      {appStates.feedbackMode && (
-        <Feedback receiveInput={receiveFeedBack}/>
       )}
       {currentPhase > 0 && (
         <div ref={appStates.messageEnd}>
