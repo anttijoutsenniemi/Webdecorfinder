@@ -1,4 +1,4 @@
 {
-    "phase1space": ["Avotoimisto.", "Neuvottelutila.", "Taukotila.", "Koko toimisto.", "Vetäytymistila.", "Aula.", "Työpiste.", "Yksityiskoti."],
+    "phase1space": ["Helsinki", "Espoo", "Vantaa", "Hämeenlinna", "Turku", "Tampere", "Vaasa", "Oulu", "Pori", "Kajaani", "Rovaniemi", "Mikkeli", "Joensuu", "Kotka", "Hanko"],
     "phase2style": ["Moderni.", "Vaalea.", "Kodinomainen.", "Tumma.", "Värikäs.", "Skandinaavinen.", "Minimalistinen.", "Design.", "Teollinen/loft."]
 }

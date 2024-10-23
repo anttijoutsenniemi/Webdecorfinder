@@ -56,6 +56,7 @@ export interface ChatMessage {
     selectedProduct: null | CompareObject;
     spaceImgMode: boolean;
     aiJson: any;
+    city: string;
     quantityNumber: number;
     showNumberPicker: boolean;
     fetchProductsAgain: boolean;
@@ -77,8 +78,8 @@ const App0: React.FC = () => {
             messages: [
               { id: 1, 
                 type: 'chatbot',
-                text: 'Tervetuloa! Olen Redecofinder AI-avustajasi, ja autan sinua suunnittelemaan tilaasi sopivilla käytetyillä kalusteilla. Voit jatkaa valitsemalla 1: saat suosituksia nopeasti ja helposti käyttämällä kuvia suunnittelemastasi tilasta. 2: täytä koko tyylikysely, jossa löydämme sinulle sopivat huonekalut yhdessä.', 
-                options: ['1. Etsi kalusteita käyttämällä kuvia tilasta', '2. Etsi kalusteita täyttämällä koko tyylikysely', /*'3. Etsi kalusteita verkosta'*/] },
+                text: 'Tervetuloa! Olen Webdecorfinder AI-avustajasi, ja autan sinua suunnittelemaan tilaasi sopivilla netistä löydetyillä kalusteilla.', 
+                options: ['1. Etsi kalusteita verkosta'] },
             ],
             furnitureClass: 'Chairs',
             messageEnd: messageEndRef,
@@ -95,6 +96,7 @@ const App0: React.FC = () => {
             modalOpen: false,
             selectedProduct: null,
             spaceImgMode: false,
+            city: "",
             aiJson: null,
             quantityNumber: 0,
             showNumberPicker: false,
@@ -156,6 +158,7 @@ const App0: React.FC = () => {
     const setSelectedProduct = (product: null | CompareObject) => setAppStates(prevState => ({ ...prevState, selectedProduct: product }));
     const setSpaceImageMode = (value: boolean) => setAppStates(prevState => ({ ...prevState, spaceImgMode: value }));
     const setAiJson = (value: any) => setAppStates(prevState => ({ ...prevState, aiJson: value }));
+    const setCity = (value: string) => setAppStates(prevState => ({ ...prevState, city: value }));
     const setShowNumberPicker = (value: boolean) => setAppStates(prevState => ({ ...prevState, showNumberPicker: value }));
     const setQuantityNumber = (value: number) => setAppStates(prevState => ({ ...prevState, quantityNumber: value }));
     const setFetchProductsAgain = (value: boolean) => setAppStates(prevState => ({ ...prevState, fetchProductsAgain: value }));
@@ -193,11 +196,11 @@ const App0: React.FC = () => {
 
   return (
       <Routes>
-        <Route path='/' element={<ChatApp appStates={appStates} navigateHandler={navigateHandler} phaseNumber={0} setModalOpen={setModalOpen} setTypingMode={setTypingMode} setLoading={setLoading} setMessages={setMessages} setFurnitureClass={setFurnitureClass} setImagesSent={setImagesSent} setTypingPhase={setTypingPhase} setChatHistory={setChatHistory} setChatHistoryDirect={setChatHistoryDirect} setErrorMessage={setErrorMessage} setRecommendations={setRecommendations} setRefImage64={setRefImage64} setRefImage642={setRefImage642} setRefImage643={setRefImage643} setSelectedProduct={setSelectedProduct} setSpaceImageMode={setSpaceImageMode} setAiJson={setAiJson} setShowNumberPicker={setShowNumberPicker} setQuantityNumber={setQuantityNumber} setFetchProductsAgain={setFetchProductsAgain} setFeedbackMode={setFeedbackMode} setWebSearchMode={setWebSearchMode}/>} />
+        <Route path='/' element={<ChatApp appStates={appStates} navigateHandler={navigateHandler} phaseNumber={0} setModalOpen={setModalOpen} setTypingMode={setTypingMode} setLoading={setLoading} setMessages={setMessages} setFurnitureClass={setFurnitureClass} setImagesSent={setImagesSent} setTypingPhase={setTypingPhase} setChatHistory={setChatHistory} setChatHistoryDirect={setChatHistoryDirect} setErrorMessage={setErrorMessage} setRecommendations={setRecommendations} setRefImage64={setRefImage64} setRefImage642={setRefImage642} setRefImage643={setRefImage643} setSelectedProduct={setSelectedProduct} setSpaceImageMode={setSpaceImageMode} setAiJson={setAiJson} setCity={setCity} setShowNumberPicker={setShowNumberPicker} setQuantityNumber={setQuantityNumber} setFetchProductsAgain={setFetchProductsAgain} setFeedbackMode={setFeedbackMode} setWebSearchMode={setWebSearchMode}/>} />
 
         {
             phaseNumbers.map((number, index)=> (
-                <Route key={index} path={`/${number}`} element={<ChatApp appStates={appStates} navigateHandler={navigateHandler} phaseNumber={number} setModalOpen={setModalOpen} setTypingMode={setTypingMode} setLoading={setLoading} setMessages={setMessages} setFurnitureClass={setFurnitureClass} setImagesSent={setImagesSent} setTypingPhase={setTypingPhase} setChatHistory={setChatHistory} setChatHistoryDirect={setChatHistoryDirect} setErrorMessage={setErrorMessage} setRecommendations={setRecommendations} setRefImage64={setRefImage64} setRefImage642={setRefImage642} setRefImage643={setRefImage643} setSelectedProduct={setSelectedProduct} setSpaceImageMode={setSpaceImageMode} setAiJson={setAiJson} setShowNumberPicker={setShowNumberPicker} setQuantityNumber={setQuantityNumber} setFetchProductsAgain={setFetchProductsAgain} setFeedbackMode={setFeedbackMode} setWebSearchMode={setWebSearchMode}/>} />
+                <Route key={index} path={`/${number}`} element={<ChatApp appStates={appStates} navigateHandler={navigateHandler} phaseNumber={number} setModalOpen={setModalOpen} setTypingMode={setTypingMode} setLoading={setLoading} setMessages={setMessages} setFurnitureClass={setFurnitureClass} setImagesSent={setImagesSent} setTypingPhase={setTypingPhase} setChatHistory={setChatHistory} setChatHistoryDirect={setChatHistoryDirect} setErrorMessage={setErrorMessage} setRecommendations={setRecommendations} setRefImage64={setRefImage64} setRefImage642={setRefImage642} setRefImage643={setRefImage643} setSelectedProduct={setSelectedProduct} setSpaceImageMode={setSpaceImageMode} setAiJson={setAiJson} setCity={setCity} setShowNumberPicker={setShowNumberPicker} setQuantityNumber={setQuantityNumber} setFetchProductsAgain={setFetchProductsAgain} setFeedbackMode={setFeedbackMode} setWebSearchMode={setWebSearchMode}/>} />
             ))
         }
 

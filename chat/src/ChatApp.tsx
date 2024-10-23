@@ -75,6 +75,7 @@ interface ChildComponentProps {
   setSelectedProduct: (product: null | CompareObject) => void;
   setSpaceImageMode: (value: boolean) => void;
   setAiJson: (value: any) => void;
+  setCity: (value: string) => void;
   setShowNumberPicker: (value: boolean) => void;
   setQuantityNumber: (value : number) => void;
   setFetchProductsAgain: (value: boolean) => void;
@@ -84,7 +85,7 @@ interface ChildComponentProps {
 
 const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, phaseNumber, setModalOpen, setTypingMode, setLoading, setMessages, setFurnitureClass,
   setImagesSent, setTypingPhase, setChatHistoryDirect, setErrorMessage, setRecommendations,
-  setRefImage64, setRefImage642, setRefImage643, setSelectedProduct, setSpaceImageMode, setAiJson, setShowNumberPicker, setQuantityNumber, setFetchProductsAgain,
+  setRefImage64, setRefImage642, setRefImage643, setSelectedProduct, setSpaceImageMode, setAiJson, setCity, setShowNumberPicker, setQuantityNumber, setFetchProductsAgain,
   setFeedbackMode, setWebSearchMode
 }) => {
   const [currentPhase, setCurrentPhase] = useState<number>(0);
@@ -167,13 +168,14 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
       if(typeof queryObject === 'string'){
         queryObject = JSON.parse(queryObject);
       }
-      let recommendations = await sendSerperQuery(queryObject.webSearchQuery);
-      console.log(recommendations);
+      let newQuery : string = queryObject.webSearchQuery + ", " + appStates.city;
+      let recommendations = await sendSerperQuery(newQuery);
+      //console.log(recommendations);
 
       if(recommendations && queryObject){
         let botAnswr : string = queryObject.explanation;
-        let top6matches = recommendations.slice(0, 6);
-        handleOptionClick('suositukset', 'Voisitko näyttää minulle kalustesuositukset?', top6matches, botAnswr);
+        let top12matches = recommendations.slice(0, 12);
+        handleOptionClick('suositukset', 'Voisitko näyttää minulle kalustesuositukset?', top12matches, botAnswr);
       }
       else {
         setLoading(false);
@@ -367,8 +369,14 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
     let recommendationArray : CompareObject[] = [];
     let nextPageNumber : number;
     switch (option) {
-        case '1. Etsi kalusteita käyttämällä kuvia tilasta':
-            botResponseText = 'Tottakai! Minkä tyyppisiä kalusteita etsitään?';
+          case '1. Etsi kalusteita käyttämällä kuvia tilasta':
+            botResponseText = 'Hienoa, aloitetaan! Mikä on lähin kaupunkisi? Tämä auttaa minua etsimään kalusteita läheltä sinua.';
+            setTypingPhase(1);
+            setTypingMode(true);
+            nextPageNumber = phaseNumber + 1;
+            break;
+        case 'Kaupunki kysytty':
+            botResponseText = 'Selvä, entä minkä tyyppisiä kalusteita etsitään?';
             let newCategories : string[] = furnitureCategories.withNumbers;
             options = newCategories;
             nextPageNumber = phaseNumber + 1;
@@ -459,7 +467,7 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
             nextPageNumber = phaseNumber + 1;
             options = ['Aloita alusta'];
             break;
-        case '3. Etsi kalusteita verkosta':
+        case '1. Etsi kalusteita verkosta':
             setWebSearchMode(true);
             nextPageNumber = phaseNumber + 1;
             setTimeout(() => { //this wont work without timeout for some reason
@@ -633,10 +641,10 @@ const receiveInput = (input : string) => {
     //typingPhase tells us to which part of the ai dialog this input is used for 1=describe the space, 2=describe style, 3=needs
     let historyArrayMessages : string[] = appStates.chatHistory;
     if(appStates.typingPhase === 1){
-      historyArrayMessages[0] = '1. User describing space: ' + input;
+      historyArrayMessages[0] = '1. User describing city: ' + input;
       setChatHistoryDirect(historyArrayMessages);
-      // handleOptionClick('Space described', input);
-      handleOptionClick('Tila kuvailtu', input);
+      setCity(input);
+      handleOptionClick('Kaupunki kysytty', input);
       setErrorMessage('');
     }
     else if(appStates.typingPhase === 2){

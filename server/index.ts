@@ -30,7 +30,7 @@ function getUnauthorizedResponse(req:any) {
 const cspConfig = {
   directives: {
     defaultSrc: ["'self'"],
-    imgSrc: ["'self'", clientPublic.webStoreUrl, "data:"],
+    imgSrc: ["'self'", clientPublic.webStoreUrl, "data:", "*"],
   },
 };
 
@@ -41,7 +41,7 @@ app.use(helmet({
 
 const port = process.env.PORT || 8000;
 
-setupCronJobs(); //start scheduled scraping and ai functions
+// setupCronJobs(); //start scheduled scraping and ai functions
 
 app.use(express.json({limit: '50mb'})); //receive req.body
 
