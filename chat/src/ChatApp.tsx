@@ -151,7 +151,7 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
       }
       let newQuery : string = queryObject.webSearchQuery + ", " + appStates.city;
       let recommendations = await sendSerperQuery(newQuery);
-      //console.log(recommendations);
+      console.log(recommendations);
 
       if(recommendations && queryObject){
         let botAnswr : string = queryObject.explanation;

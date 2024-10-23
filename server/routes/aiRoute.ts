@@ -39,8 +39,10 @@ const validateAndProcessRequest = (req: Request, res: Response, checkUserData? :
 aiRoute.post("/webSearch", async (req : express.Request, res : express.Response) : Promise<void> => { 
   try {
       let img64Array : string[] = req.body.refPic64;
-      let category : string = req.body.category;
-      if(validateAndProcessRequest(req, res, true/*checktext*/, true/*check imgs*/)){
+      
+      let category : string = req.body.category.toString();
+
+      if(validateAndProcessRequest(req, res, false/*checktext*/, true/*check imgs*/)){
           let aiJson = await fetchInterPretationForWebSearch(img64Array, category);
           res.status(200).json(aiJson);
       }
