@@ -1,0 +1,71 @@
+.chat-app-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: './waves.png';
+    background-size: cover;
+  }
+  
+  .chat-wrapper {
+    width: 100%;
+    max-width: 600px; /* Narrow down on desktop */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  }
+  
+  .chat-message {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .chat-message.chatbot {
+    justify-content: flex-start;
+  }
+  
+  .chat-message.user {
+    justify-content: flex-end;
+  }
+  
+  .chatbot-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .chat-bubble {
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chat-message.chatbot .chat-bubble {
+    background-color: #e0e0e0;
+  }
+  
+  .chat-message.user .chat-bubble {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .chat-options {
+    margin-top: 10px;
+  }
+  
+  .chat-options button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #2196f3;
+    color: white;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .chat-wrapper {
+      width: 90%;
+    }
+  }

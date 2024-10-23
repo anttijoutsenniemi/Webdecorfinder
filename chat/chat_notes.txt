@@ -1,0 +1,6 @@
+- enssijainen demo tavaratrading valikoimaan perustuva
+- siinä ensisijaisesti etsitään käytetyistä kalusteista sitten uusista
+- kun tämä toimii niin lähdetään tutkimaan etsimistä verkosta -> tässäkin prio 2nd hand tuotteet
+
+-Kerätään kaikki käyttäjän kirjoittamat ja lisäämät tiedot ja lähetetään prpmtilla ai ja pyydetään strukturoitu json jota
+verrataan tallennettuun dataan huonekaluista (jokaisesta on tehty jonkinlainen tekoäöyutlkinta valmiiksi)

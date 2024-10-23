@@ -1,0 +1,108 @@
+.input-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .typing-box-container {
+    display: flex; /* Enable flexbox layout */
+    width: 100%;
+    align-items: center; /* Vertically center the input and button */
+  }
+  
+  .rounded-input {
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    flex: 1; /* Take up the remaining space */
+    margin-right: 10px;
+    outline: none;
+  }
+  
+  .rounded-input:focus {
+    /* border-color: #007bff; */
+    border-color: rgb(51, 51, 51);
+  }
+  
+  .send-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    /* background-color: #007bff; */
+    background-color: rgb(5, 88, 84);
+    color: white;
+    cursor: pointer;
+    flex-shrink: 0; /* Prevent the button from shrinking */
+  }
+  
+  .send-button:hover {
+    /* background-color: #0056b3; */
+    background-color: rgb(51, 51, 51);
+  }
+
+  /* .compo-options-container {
+    display: flex;
+    overflow-x: auto;
+    margin-bottom: 10px;
+  }
+  
+  .compo-option-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    white-space: nowrap;
+  } */
+
+  .compo-options-container {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap;
+    width: 100%; /* Ensure the container fits within the parent */
+    margin-bottom: 10px;
+    padding: 5px 0; /* Add some padding to make it look nicer */
+    box-sizing: border-box; /* Include padding in the width calculation */
+  }
+  
+  .compo-option-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0; /* Prevent the buttons from shrinking */
+  }
+
+  .feedback-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .feedback-button {
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: lightgray;
+    transition: background-color 0.3s ease;
+  }
+  
+  .feedback-button.active {
+    background-color: rgb(5, 88, 84);
+    color: white;
+  }
+  
+  .feedback-button:not(.active):hover {
+    background-color: #ccc;
+  }
+  
+  

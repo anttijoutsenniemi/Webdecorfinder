@@ -1,0 +1,48 @@
+.number-options-container {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap;
+    width: 100%; /* Ensure the container fits within the parent */
+    margin-bottom: 10px;
+    padding: 5px 0; /* Add some padding to make it look nicer */
+    box-sizing: border-box; /* Include padding in the width calculation */
+  }
+  
+  .number-option-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0; /* Prevent the buttons from shrinking */
+  }
+
+  .number-typing-box-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .number-send-button {
+    width: 40%;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    background-color: rgb(5, 88, 84);
+    /* background-color: #007bff; */
+    color: white;
+    cursor: pointer;
+    /* flex-shrink: 0; Prevent the button from shrinking */
+  }
+  
+  .number-send-button:hover {
+    /* background-color: #0056b3; */
+    background-color: rgb(51, 51, 51);
+  }
+
+  .number-option-button.selected {
+    background-color: rgb(5, 88, 84);
+    color: white;
+  }

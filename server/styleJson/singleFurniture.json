@@ -1,0 +1,28 @@
+{
+    "colorThemes": {
+        "dark": 0,
+        "light": 0,
+        "colorful": 0,
+        "earthy": 0,
+        "blackAndWhite": 0,
+        "pastel": 0,
+        "neutrals": 0,
+        "jewelTones": 0,
+        "metallics": 0,
+        "oceanic": 0
+    },
+    "designStyles": {
+        "industrial": 0,
+        "scandinavian": 0,
+        "minimalist": 0,
+        "modern": 0,
+        "farmhouse": 0,
+        "artDeco": 0,
+        "bohemian": 0,
+        "traditional": 0,
+        "rustic": 0,
+        "glam": 0,
+        "contemporary": 0,
+        "transitional": 0
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "withNumbers": [
+        "1. Työtuolit",                     
+        "2. Korkeat tuolit",                
+        "3. Neuvottelu- ja asiakastuolit",  
+        "4. Sohvat, nojatuolit ja rahit",   
+        "5. Säilytyskalusteet",             
+        "6. Työpöydät",                     
+        "7. Korkeat pöydät",                
+        "8. Neuvottelupöydät",              
+        "9. Sähköpöydät",                   
+        "10. Sohva- ja pikkupöydät",
+        "11. Neuvotteluryhmät"
+    ],
+    "withoutNumbers": [
+        "Työtuolit",                      
+        "Korkeat tuolit",                 
+        "Neuvottelu- ja asiakastuolit",   
+        "Sohvat, nojatuolit ja rahit",    
+        "Säilytyskalusteet",              
+        "Työpöydät",                      
+        "Korkeat pöydät",                 
+        "Neuvottelupöydät",               
+        "Sähköpöydät",                    
+        "Sohva- ja pikkupöydät",       
+        "Neuvotteluryhmät"                
+    ]
+}

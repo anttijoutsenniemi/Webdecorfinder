@@ -1,0 +1,7 @@
+.color-box {
+    /* värit asiakkaan sivuilta */
+    background-color: rgb(5, 88, 84); /*tummanvihreä*/
+    background-color: rgb(187, 203, 203); /*vaaleanvihreä*/
+    background-color: rgb(237, 236, 232); /*vaaleanharmaa*/
+    background-color: rgb(51, 51, 51); /*vaalea musta*/
+}

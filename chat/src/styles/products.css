@@ -1,0 +1,80 @@
+.product-card-container {
+  display: flex;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Default style for 3 cards in a row on desktop */
+.product-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s;
+  width: calc(33.33% - 16px); /* 3 cards per row with 16px gap */
+  position: relative;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+}
+
+.best-match-label {
+  background-color: #ffeb3b;
+  border-radius: 0 0 12px 0;
+  color: #333;
+  font-weight: bold;
+  left: 0;
+  padding: 4px 8px;
+  position: absolute;
+  top: 0;
+}
+
+.product-image {
+  height: 150px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.product-details {
+  padding: 16px;
+}
+
+.product-title {
+  font-size: 18px;
+  margin: 0;
+}
+
+.product-quantity,
+.product-price {
+  color: #555;
+  font-size: 14px;
+  margin: 8px 0 0;
+}
+
+.load-more-container {
+  display: 'flex';
+  justify-content: center;
+  align-items: center;
+}
+
+.load-more-button {
+  /* align-self: center; */
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: grey;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Media query for 2 cards per row on mobile */
+@media (max-width: 768px) {
+  .product-card {
+    width: calc(50% - 16px); /* 2 cards per row with 16px gap */
+  }
+}
