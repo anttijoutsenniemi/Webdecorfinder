@@ -542,7 +542,7 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
               //Replace spaces with underscores
               let identifier = normalized.replace(/\s+/g, '_');
               setFurnitureClass(identifier);
-              botResponseText = `Selvä, etsitään kategoriasta: ${option.toLowerCase()} toiveittesi mukaan. Haluatko viimeiseksi lisätä kuvia tilastasi vai saada suoraan täysin satunnaisia kalustesuosituksia?`;
+              botResponseText = `Selvä, etsitään kategoriasta: ${option.toLowerCase()} toiveittesi mukaan. Viimeisenä pyytäisin kuvia tilastasi jotta osaan etsiä siihen sopivia kalusteita.`;
               if(appStates.webSearchMode){
                 options = ['Lisää kuva/kuvia tilasta'];
 
@@ -645,6 +645,7 @@ const receiveInput = (input : string) => {
       setChatHistoryDirect(historyArrayMessages);
       setCity(input);
       handleOptionClick('Kaupunki kysytty', input);
+      setTypingMode(false);
       setErrorMessage('');
     }
     else if(appStates.typingPhase === 2){
