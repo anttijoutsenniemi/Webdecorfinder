@@ -1,69 +1,52 @@
-import axios from "axios";
+import { api } from "../axiosConfig";
 
-export const fetchFurnitureData = async (category : string) => {
-    try {
-        const response = await axios.post('/apiroute/furnitureCategory', 
-        { category: category }, //req.body
-        {
-          auth: {
-              username: process.env.REACT_APP_TESTER_USERNAME!,
-              password: process.env.REACT_APP_TESTER_PASSWORD!
-          }
-      });
-        return response.data;
-      } catch (error) {
-        console.error('There was an error!', error);
-      }
-}
-
-export const fetchFurnitureDataWithQuantity = async (category : string, quantity : number) => {
+export const fetchFurnitureData = async (category: string) => {
   try {
-      const response = await axios.post('/apiroute/categoryWithQuantity', 
-      { category: category, quantity: quantity }, //req.body
-      {
-        auth: {
-            username: process.env.REACT_APP_TESTER_USERNAME!,
-            password: process.env.REACT_APP_TESTER_PASSWORD!
-        }
+    const response = await api.post('/apiroute/furnitureCategory', { 
+      category: category 
     });
-      return response.data;
-    } catch (error) {
-      console.error('There was an error!', error);
-    }
-}
+    return response.data;
+  } catch (error) {
+    console.error('There was an error!', error);
+    throw error;
+  }
+};
+
+export const fetchFurnitureDataWithQuantity = async (category: string, quantity: number) => {
+  try {
+    const response = await api.post('/apiroute/categoryWithQuantity', { 
+      category: category, 
+      quantity: quantity 
+    });
+    return response.data;
+  } catch (error) {
+    console.error('There was an error!', error);
+    throw error;
+  }
+};
 
 export const sendFeedbackToServer = async (success: boolean, feedback?: string) => {
-  let reqBody : object = { success: success };
-  if(feedback){ //we only send feedback if there is any text
-    reqBody = { success: success, feedback: feedback };
-  }
   try {
-      const response = await axios.post('/apiroute/sendFeedback', 
-      reqBody, //req.body
-      {
-        auth: {
-            username: process.env.REACT_APP_TESTER_USERNAME!,
-            password: process.env.REACT_APP_TESTER_PASSWORD!
-        }
-    });
-      return response.data;
-    } catch (error) {
-      console.error('There was an error!', error);
-    }
-}
+    const reqBody = feedback 
+      ? { success, feedback } 
+      : { success };
+
+    const response = await api.post('/apiroute/sendFeedback', reqBody);
+    return response.data;
+  } catch (error) {
+    console.error('There was an error!', error);
+    throw error;
+  }
+};
 
 export const sendSerperQuery = async (searchQuery: string) => {
   try {
-      const response = await axios.post('/apiroute/serperImageSearchFiltered', 
-      { searchQuery: searchQuery }, //req.body
-      {
-        auth: {
-            username: process.env.REACT_APP_TESTER_USERNAME!,
-            password: process.env.REACT_APP_TESTER_PASSWORD!
-        }
+    const response = await api.post('/apiroute/searchSerperWebStoresFiltered', { 
+      searchQuery: searchQuery 
     });
-      return response.data;
-    } catch (error) {
-      console.error('There was an error!', error);
-    }
-}
+    return response.data;
+  } catch (error) {
+    console.error('There was an error!', error);
+    throw error;
+  }
+};

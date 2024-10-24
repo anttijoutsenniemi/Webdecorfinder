@@ -8,6 +8,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ products, onCardClick }) => {
+  console.log('procusts', products);
   const [visibleCount, setVisibleCount] = useState(3);
 
   // Function to load more products

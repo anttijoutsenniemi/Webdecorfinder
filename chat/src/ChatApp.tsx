@@ -1,18 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
-import InputField from './components/InputField';
-import './App.css';
-import ImageCapture from './components/ImageCapture';
-import { fetchInterPretationForWebSearch } from './components/Aihandler';
-import { sendSerperQuery } from './components/ApiFetches';
-import furnitureCategories from './assets/furnitureCategories.json';
-import ProductCard from './components/Products';
-import Modal from './components/Modal';
-import { AppStates } from './App';
+import type { } from 'ldrs';
+import { quantum } from 'ldrs';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useLocation } from 'react-router-dom';
-import { quantum } from 'ldrs';
-import type {} from 'ldrs';
+import { AppStates, CompareObject } from './App';
+import './App.css';
+import furnitureCategories from './assets/furnitureCategories.json';
+import { fetchInterPretationForWebSearch } from './components/Aihandler';
+import { sendSerperQuery } from './components/ApiFetches';
 import CustomButton from './components/BackButton';
+import ImageCapture from './components/ImageCapture';
+import InputField from './components/InputField';
+import Modal from './components/Modal';
+import ProductCard from './components/Products';
+
 quantum.register();
 
 export interface ChatMessage {
@@ -39,16 +40,6 @@ export type StyleObject = {
   };
 };
 
-export type CompareObject = {
-  _id: any;
-  picUrl: string;
-  title: string;
-  productUrl: string;
-  quantity?: string;
-  price?: string;
-  deleted: boolean;
-  styleJson: StyleObject;
-};
 
 interface ChildComponentProps {
   appStates: AppStates;
@@ -102,6 +93,7 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
   useEffect(() => {
     scrollToBottom();
   }, [appStates.messages]);
+  
 
   //this updates the currentphase so we can display go back arrow
   useEffect(() => {
@@ -145,17 +137,22 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
       if (appStates.refImage643) {
         refImageArray.push(appStates.refImage643);
       }
-      let queryObject = await fetchInterPretationForWebSearch(refImageArray, appStates.furnitureClass);
-      if(typeof queryObject === 'string'){
-        queryObject = JSON.parse(queryObject);
-      }
-      let newQuery : string = queryObject.webSearchQuery + ", " + appStates.city;
-      let recommendations = await sendSerperQuery(newQuery);
-      console.log(recommendations);
-
-      if(recommendations && queryObject){
-        let botAnswr : string = queryObject.explanation;
-        let top12matches = recommendations.slice(0, 12);
+      const queryObject = await fetchInterPretationForWebSearch(refImageArray, appStates.furnitureClass);
+      const parsedQueryObject = typeof queryObject === 'string' ? JSON.parse(queryObject) : queryObject;
+      
+      const newQuery = `${appStates.city} ${parsedQueryObject.webSearchQuery} `;
+      console.log("Search query:", newQuery);
+      
+      const recommendations = await sendSerperQuery(newQuery);
+      console.log("Search results:", recommendations);
+  
+      if (recommendations && recommendations.length > 0) {
+        const botAnswr = parsedQueryObject.explanation
+        const top12matches = recommendations.slice(0, 12);
+        
+        // Järjestetään tulokset position-kentän mukaan jos tarpeellista
+        // const sortedMatches = top12matches.sort((a, b) => a.position - b.position);
+        
         handleOptionClick('suositukset', 'Voisitko näyttää minulle kalustesuositukset?', top12matches, botAnswr);
       }
       else {
@@ -232,6 +229,7 @@ const ChatApp: React.FC<ChildComponentProps> = ({ appStates, navigateHandler, ph
             if(botAnswr && recommendations){ 
               botResponseText = botAnswr + " Löysin nämä alla olevat suositukset, jotka sopivat mielestäni parhaiten tyyliisi. Jos suositukset eivät tällä kertaa osuneet kohdalleen, voimme myös halutessasi etsiä uusista tuotteista tai eri kategoriasta!";
               recommendationArray = recommendations;
+              console.log('recomendationArray,', recommendationArray);
               setLoading(false);
             }
             else{

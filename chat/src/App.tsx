@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation, useNavigationType } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import ChatApp from './ChatApp';
 import useNavigationDetection from './components/NavigationDetecter';
 
@@ -28,14 +28,16 @@ export interface ChatMessage {
   };
   
   export type CompareObject = {
-    _id: any;
+    _id?: any;
     picUrl: string;
     title: string;
     productUrl: string;
+    domain?: string;
     quantity?: string;
-    price?: string;
-    deleted: boolean;
-    styleJson: StyleObject;
+    position?: number;
+    price?: number;
+    deleted?: boolean;
+    styleJson?: StyleObject;
   };
 
   export interface AppStates {

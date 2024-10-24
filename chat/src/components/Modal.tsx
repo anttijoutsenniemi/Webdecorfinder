@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
-import './../styles/modal.css';
 import { CompareObject } from '../App';
+import './../styles/modal.css';
 
 interface ModalProps {
   isOpen: boolean;

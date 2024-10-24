@@ -29,13 +29,13 @@ interface SerperResponse {
 }
 
 // Filtteröity ShoppingItem
-interface FilteredShoppingItem {
+interface FilteredSearchResult {
   title: string;
-  source: string;
-  link: string;
-  price: number;
-  imageUrl: string;
-  position: number;
+  productUrl: string; // link kentästä
+  picUrl: string; // imageUrl kentästä
+  domain: string; // source kentästä
+  price?: number; // uusi kenttä, mutta optional
+  position?: number; // uusi kenttä, mutta optional
 }
 
 function cleanPrice(priceStr: string): number {
@@ -123,9 +123,11 @@ export async function searchSerperWebStores(
   }
 }
 
+// WebStore search muutetaan palauttamaan sama muoto
 export async function searchSerperWebStoresFiltered(
   query: string
-): Promise<FilteredShoppingItem[]> {
+): Promise<FilteredSearchResult[]> {
+  console.log('query saatu', query);
   const response = await searchSerperWebStores(query);
 
   if (!response.shopping) {
@@ -134,10 +136,10 @@ export async function searchSerperWebStoresFiltered(
 
   return response.shopping.map((item) => ({
     title: item.title,
-    source: item.source,
-    link: item.link,
+    productUrl: item.link, // muutettu link -> productUrl
+    picUrl: item.imageUrl, // muutettu imageUrl -> picUrl
+    domain: item.source, // muutettu source -> domain
     price: cleanPrice(item.price),
-    imageUrl: item.imageUrl,
     position: item.position,
   }));
 }

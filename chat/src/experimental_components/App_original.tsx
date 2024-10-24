@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import InputField from '../components/InputField';
-import './App.css';
-import ImageCapture from '../components/ImageCapture';
+import React, { useEffect, useRef, useState } from 'react';
+import clientPublic from '../assets/clientPublic.json';
 import { fetchInterPretationWithReference } from '../components/Aihandler';
 import { fetchFurnitureData } from '../components/ApiFetches';
-import clientPublic from '../assets/clientPublic.json';
-import ProductCard from '../components/Products';
+import ImageCapture from '../components/ImageCapture';
+import InputField from '../components/InputField';
 import Modal from '../components/Modal';
+import ProductCard from '../components/Products';
+import './App.css';
 
 export interface ChatMessage {
   id: number;
@@ -33,14 +33,16 @@ export type StyleObject = {
 };
 
 export type CompareObject = {
-  _id: any;
+  _id?: any;
   picUrl: string;
   title: string;
   productUrl: string;
+  domain?: string;
   quantity?: string;
-  price?: string;
-  deleted: boolean;
-  styleJson: StyleObject;
+  position?: number;
+  price?: number;
+  deleted?: boolean;
+  styleJson?: StyleObject;
 };
 
 const App: React.FC = () => {
