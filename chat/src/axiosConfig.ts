@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Määritetään baseURL vain kehitysympäristössä
 const getBaseUrl = () => {
-  return process.env.NODE_ENV === "development" ? "http://localhost:8000" : "";
+  return process.env.NODE_ENV ? (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "") : "";
 };
 
 // Autentikaation asetukset
