@@ -52,6 +52,7 @@
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.19",
     "dedent": "^1.5.3",
+    "http-proxy-middleware": "^3.0.3",
     "postcss": "^8.4.38",
     "react-app-rewired": "^2.2.1",
     "tailwindcss": "^3.4.3"
