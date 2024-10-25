@@ -1,0 +1,41 @@
+# Node.js dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Dependency directories
+chat/node_modules
+server/node_modules
+
+# Build directories
+chat/dist
+server/dist
+
+# Environment files
+chat/.env
+server/.env
+
+# Git
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# Miscellaneous
+.DS_Store
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Ignore test files
+chat/test.js
+chat/src/**/*.test.tsx
+
+# Ignore documentation
+chat/README.md
+server/README.md
