@@ -287,7 +287,7 @@ const ChatApp: React.FC<ChildComponentProps> = ({
         break;
       case "Aloita alusta":
         botResponseText =
-          "Tervetuloa! Olen Webdecorfinder AI-avustajasi, autan sinua löytämään verkosta suunnitelmiisi sopivia käytettyjä kalusteita";
+          "Tervetuloa! Olen ReDecoFinder AI-avustajasi, autan sinua löytämään verkosta suunnitelmiisi sopivia käytettyjä kalusteita";
         options = ["1. Etsi kalusteita verkosta"];
         nextPageNumber = phaseNumber + 1;
         break;
@@ -418,7 +418,7 @@ const ChatApp: React.FC<ChildComponentProps> = ({
     <div className="chat-app-background">
       <div className="screen-wrapper">
         <div className="app-header">
-          <h1 className="header-title">WebDecorFinder avustaja</h1>
+          <h1 className="header-title">ReDecoFinder avustaja</h1>
           <div className="hamburger-menu" onClick={() => toggleDrawer()}>
             &#9776;
           </div>

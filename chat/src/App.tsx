@@ -80,7 +80,7 @@ const App0: React.FC = () => {
             messages: [
               { id: 1, 
                 type: 'chatbot',
-                text: 'Tervetuloa! Olen Webdecorfinder AI-avustajasi, autan sinua löytämään verkosta suunnitelmiisi sopivia käytettyjä kalusteita', 
+                text: 'Tervetuloa! Olen ReDecoFinder AI-avustajasi, autan sinua löytämään verkosta suunnitelmiisi sopivia käytettyjä kalusteita', 
                 options: ['1. Etsi kalusteita verkosta'] },
             ],
             furnitureClass: 'Chairs',
